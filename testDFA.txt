@@ -1,0 +1,41 @@
+    currS = {nfa.states[nfa.startS]}
+    queue = [(currS, 0)]
+    index = 0
+    isVisited = [{}]
+    ans.states.append(State(index))
+    acceptingFlag = False
+    for num, isAccept in nfa.is_accepting.items():
+        if nfa.states[num] in currS and isAccept:
+            acceptingFlag = True
+    ans.is_accepting[index] = acceptingFlag
+    while queue:
+        currS, pos = queue.pop(0)
+        isVisited.append(currS)
+        for sym in nfa.alphabet:
+            nextS = set()
+            currS = currS | set(nfa.epsilonClose(list(currS)))
+            for s in currS:
+                if sym in s.transition:
+                    stats = s.transition[sym]
+                    nextS = nextS | stats
+            reachAbleStates = nfa.epsilonClose(list(nextS))
+            nextS = nextS | set(reachAbleStates)
+            if nextS not in isVisited:
+                index = index + 1
+                desState = State(index)
+                ans.states.append(desState)
+                ans.addTransition(ans.states[pos], desState, sym)  
+                ## change the is_accpeting
+                acceptingFlag = False
+
+                for num, isAccept in nfa.is_accepting.items():
+                    if nfa.states[num] in nextS and isAccept:
+                        acceptingFlag = True
+                ans.is_accepting[index] = acceptingFlag
+                queue.append((nextS, index))
+    ## change the is_accepting
+    # ans.is_accepting[{}] = False
+    for cha in nfa.alphabet:
+        if cha != '&':
+            ans.alphabet.append(cha)
+    return ans
