@@ -1,4 +1,5 @@
 # NFA2DNFA
+Regular Expression to NFA to DFA
 
 - Implemented Thompson's construction to transform regular expression to NFA
 
